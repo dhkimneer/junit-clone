@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Controller <- Service <- Repository 순 테스트
  * 1. Repository: DB쪽 관련 테스트
@@ -20,7 +22,20 @@ public class BookRepositoryTest {
     // 1. 책 등록
     @Test
     public void book_registration_test() {
-        System.out.println("책 등록 테스트 실행");
+        // given (데이터 준비)
+        String title = "junit5";
+        String author = "meta";
+        Book book = Book.builder()
+                .title(title)
+                .author(author)
+                .build();
+
+        // when (테스트 실행)
+        Book bookPS = bookRepository.save(book); // DB에 저장된 북이므로 영속화된 데이터
+
+        // then (검증)
+        assertEquals(title, bookPS.getTitle());
+        assertEquals(author, bookPS.getAuthor());
     }
 
     // 2. 책 목록 보기
