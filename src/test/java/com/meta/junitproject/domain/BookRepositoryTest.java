@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  * [Junit test]
  * 1. 테스트 메서드 실행 순서 보장이 안 된다. -> @Order(1) 같은 어노테이션 붙여야 순서 보장.
  * 2. 테스트 메서드가 하나 실행 후 종료되면 데이터 초기화. by @Transactional
- * 그런데 pk(auto-increment)값이 초기화가 안 된다. -> @Sql, @AfterEach(alter sql문 직접 실행해 auto-increment 초기화)
+ * 그런데 pk(auto-increment)값이 초기화가 안 된다. -> @Sql, @BeforeEach(alter sql문 직접 실행해 auto-increment 초기화)
  */
 
 @DataJpaTest  // DB와 관련된 컴포넌트만 메모리에 로딩(Controller, Service는 메모리에 안 뜬다.)
@@ -118,5 +118,39 @@ public class BookRepositoryTest {
         assertFalse(bookRepository.findById(id).isPresent());
     }
 
+    // 1, junit, meta
     // 5. 책 수정
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    public void modify_book() {
+        // given
+        Long id = 1L;
+        String title = "junit5";
+        String author = "meta2";
+        Book book = new Book(id, title, author);
+
+//        bookRepository.findAll()
+//                .forEach((b) -> {
+//                    System.out.println(b.getId());
+//                    System.out.println(b.getTitle());
+//                    System.out.println(b.getAuthor());
+//                    System.out.println("1. ==========================");
+//                });
+
+        // when
+        Book bookPS = bookRepository.save(book);
+
+//        bookRepository.findAll()
+//                .forEach((b) -> {
+//                    System.out.println(b.getId());
+//                    System.out.println(b.getTitle());
+//                    System.out.println(b.getAuthor());
+//                    System.out.println("2. ==========================");
+//                });
+
+        // then
+        assertEquals(id, bookPS.getId());
+        assertEquals(title, bookPS.getTitle());
+        assertEquals(author, bookPS.getAuthor());
+    }
 }
