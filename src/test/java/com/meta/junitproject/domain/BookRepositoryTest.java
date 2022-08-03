@@ -32,6 +32,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  * 그런데 pk(auto-increment)값이 초기화가 안 된다. -> @Sql, @BeforeEach(alter sql문 직접 실행해 auto-increment 초기화)
  */
 
+/**
+ * [Junit: 테스트를 위한 도구, 라이브러리]
+ * 1. @Test 실행 시 @Rollback이 디폴트로 true로 되어 있다.
+ * 2. 메서드 실행(트랜잭션 시작) -> 종료(트랜잭션 종료) -> rollback됨!
+ * *** 실제 서버로 테스트할 때 id를 검증하는 것이라면(auto-increment) 쓰지 마라.
+ */
+
 @DataJpaTest  // DB와 관련된 컴포넌트만 메모리에 로딩(Controller, Service는 메모리에 안 뜬다.)
 public class BookRepositoryTest {
 
@@ -118,8 +125,9 @@ public class BookRepositoryTest {
         assertFalse(bookRepository.findById(id).isPresent());
     }
 
-    // 1, junit, meta
     // 5. 책 수정
+    // BeforeEach에서 1건 메모리에 save -> table drop(because of auto-increment) -> update test에서 업데이트 후 트랜잭션 종료되면 메모리에서 롤백된다.
+    // table drop이 메모리가 아닌 하드에 있는 테이블이 drop되는 것이다. 따라서 beforeEach 후 왜 @Sql을 탔는데 기존 데이터가 지워지지 않는지 궁금해하면 안 된다.
     @Sql("classpath:db/tableInit.sql")
     @Test
     public void modify_book() {
