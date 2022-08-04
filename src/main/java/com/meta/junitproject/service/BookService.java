@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Client -> (Filter) -> Dispatcher Servlet -> Controller -> Service -> Repository -> Persistence Context -> DB
  * Service에서 트랜잭션 시작, 종료. 따라서 종료되면 DB 변형 불가능
@@ -34,6 +37,12 @@ public class BookService {
     }
 
     // 2. 책 목록 보기
+    // stream / filter / map(박스에 옮겨담기, 얘만의 스트림으로 바뀜) / collect(변환해서 수집/목적지로 전달)
+    public List<BookRespDto> look_book_contents() {
+        return bookRepository.findAll().stream()
+                .map(new BookRespDto()::toDto)
+                .collect(Collectors.toList());
+    }
 
     // 3. 책 한 권 보기
 
