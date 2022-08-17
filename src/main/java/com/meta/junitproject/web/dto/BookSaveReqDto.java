@@ -1,8 +1,10 @@
 package com.meta.junitproject.web.dto;
 
 import com.meta.junitproject.domain.Book;
+import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 @Setter  // Controller에서 setter가 호출되면서 DTO에 값이 채워짐.
 public class BookSaveReqDto {
     private String title;
