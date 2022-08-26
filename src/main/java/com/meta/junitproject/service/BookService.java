@@ -41,14 +41,15 @@ public class BookService {
                 throw new RuntimeException("메일이 전송되지 않았습니다.");
             }
         }
-        return new BookRespDto().toDto(bookPS);
+        return bookPS.toDto();
     }
 
     // 2. 책 목록 보기
     // stream / filter / map(박스에 옮겨담기, 얘만의 스트림으로 바뀜) / collect(변환해서 수집/목적지로 전달)
     public List<BookRespDto> look_book_contents() {
         return bookRepository.findAll().stream()
-                .map(new BookRespDto()::toDto)
+//                .map((bookPS) -> bookPS.toDto())
+                .map(Book::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -56,7 +57,8 @@ public class BookService {
     public BookRespDto look_one_book(Long id) {
         Optional<Book> bookOP = bookRepository.findById(id);
         if (bookOP.isPresent()) {
-            return new BookRespDto().toDto(bookOP.get());
+            Book bookPS = bookOP.get();
+            return bookPS.toDto();
         } else {
             throw new RuntimeException("해당 아이디를 찾을 수 없습니다.");
         }
@@ -71,11 +73,12 @@ public class BookService {
     // 5. 책 수정
     // Transactional 걸린 애들은 컨트롤러로 넘겨줄 필요 없음.
     @Transactional(rollbackFor = RuntimeException.class)
-    public void modify_book(Long id, BookSaveReqDto dto) { // id, title, author
+    public BookRespDto modify_book(Long id, BookSaveReqDto dto) { // id, title, author
         Optional<Book> bookOP = bookRepository.findById(id);
         if (bookOP.isPresent()) {
             Book bookPS = bookOP.get();
             bookPS.update(dto.getTitle(), dto.getAuthor());
+            return bookPS.toDto();
         } else {
             throw new RuntimeException("해당 아이디를 찾을 수 없습니다.");
         }

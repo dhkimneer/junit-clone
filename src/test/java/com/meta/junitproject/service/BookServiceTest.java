@@ -1,5 +1,6 @@
 package com.meta.junitproject.service;
 
+import com.meta.junitproject.domain.Book;
 import com.meta.junitproject.domain.BookRepository;
 import com.meta.junitproject.util.MailSender;
 import com.meta.junitproject.web.dto.BookRespDto;
@@ -10,6 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,9 +60,66 @@ public class BookServiceTest {
         BookRespDto bookRespDto = bookService.register_book(dto);
 
         // then
-//        assertEquals(dto.getTitle(), bookRespDto.getTitle());
-//        assertEquals(dto.getAuthor(), bookRespDto.getAuthor());
-        assertThat(dto.getTitle()).isEqualTo(bookRespDto.getTitle());
-        assertThat(dto.getAuthor()).isEqualTo(bookRespDto.getAuthor());
+        assertThat(bookRespDto.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(bookRespDto.getAuthor()).isEqualTo(dto.getAuthor());
+    }
+
+    @Test
+    public void look_book_contents() {
+        // given(파라미터로 들어올 데이터)
+
+        // stub(가설)
+        List<Book> books = new ArrayList<>();
+        books.add(new Book(1L, "junit강의", "메타코딩"));
+        books.add(new Book(2L, "spring강의", "겟인데어"));
+        when(bookRepository.findAll()).thenReturn(books);
+
+        // when(실행)
+        List<BookRespDto> dtos = bookService.look_book_contents();
+
+        // then(검증)
+        assertThat(dtos.get(0).getTitle()).isEqualTo("junit강의");
+        assertThat(dtos.get(0).getAuthor()).isEqualTo("메타코딩");
+        assertThat(dtos.get(1).getTitle()).isEqualTo("spring강의");
+        assertThat(dtos.get(1).getAuthor()).isEqualTo("겟인데어");
+    }
+
+    @Test
+    public void look_one_book() {
+        // given
+        Long id = 1L;
+
+        // stub
+        Book book = new Book(1L, "junit강의", "메타코딩");
+        Optional<Book> bookOP = Optional.of(book);
+        when(bookRepository.findById(id)).thenReturn(bookOP);
+
+        // when
+        BookRespDto bookRespDto = bookService.look_one_book(id);
+
+        // then
+        assertThat(bookRespDto.getTitle()).isEqualTo(book.getTitle());
+        assertThat(bookRespDto.getAuthor()).isEqualTo(book.getAuthor());
+    }
+
+    @Test
+    public void modify_book() {
+        // given
+        Long id = 1L;
+        BookSaveReqDto dto = new BookSaveReqDto();
+        dto.setTitle("spring강의");
+        dto.setAuthor("겟인데어");
+
+        // stub
+        Book book = new Book(1L, "junit강의", "메타코딩");
+        Optional<Book> bookOP = Optional.of(book);
+        when(bookRepository.findById(id)).thenReturn(bookOP);
+
+        // when
+        BookRespDto bookRespDto = bookService.modify_book(id, dto);
+
+        // then
+        assertThat(bookRespDto.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(bookRespDto.getAuthor()).isEqualTo(dto.getAuthor());
     }
 }
