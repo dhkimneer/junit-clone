@@ -1,6 +1,5 @@
-package com.meta.junitproject.web.dto;
+package com.meta.junitproject.web.dto.response;
 
-import com.meta.junitproject.domain.Book;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
