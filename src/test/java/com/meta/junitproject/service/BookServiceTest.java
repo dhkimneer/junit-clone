@@ -3,6 +3,7 @@ package com.meta.junitproject.service;
 import com.meta.junitproject.domain.Book;
 import com.meta.junitproject.domain.BookRepository;
 import com.meta.junitproject.util.MailSender;
+import com.meta.junitproject.web.dto.response.BookListRespDto;
 import com.meta.junitproject.web.dto.response.BookRespDto;
 import com.meta.junitproject.web.dto.request.BookSaveReqDto;
 import org.junit.jupiter.api.Test;
@@ -75,13 +76,13 @@ public class BookServiceTest {
         when(bookRepository.findAll()).thenReturn(books);
 
         // when(실행)
-        List<BookRespDto> dtos = bookService.look_book_contents();
+        BookListRespDto bookListRespDto = bookService.look_book_contents();
 
         // then(검증)
-        assertThat(dtos.get(0).getTitle()).isEqualTo("junit강의");
-        assertThat(dtos.get(0).getAuthor()).isEqualTo("메타코딩");
-        assertThat(dtos.get(1).getTitle()).isEqualTo("spring강의");
-        assertThat(dtos.get(1).getAuthor()).isEqualTo("겟인데어");
+        assertThat(bookListRespDto.getItems().get(0).getTitle()).isEqualTo("junit강의");
+        assertThat(bookListRespDto.getItems().get(0).getAuthor()).isEqualTo("메타코딩");
+        assertThat(bookListRespDto.getItems().get(1).getTitle()).isEqualTo("spring강의");
+        assertThat(bookListRespDto.getItems().get(1).getAuthor()).isEqualTo("겟인데어");
     }
 
     @Test

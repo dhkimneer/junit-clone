@@ -3,6 +3,7 @@ package com.meta.junitproject.service;
 import com.meta.junitproject.domain.Book;
 import com.meta.junitproject.domain.BookRepository;
 import com.meta.junitproject.util.MailSender;
+import com.meta.junitproject.web.dto.response.BookListRespDto;
 import com.meta.junitproject.web.dto.response.BookRespDto;
 import com.meta.junitproject.web.dto.request.BookSaveReqDto;
 import lombok.RequiredArgsConstructor;
@@ -46,11 +47,14 @@ public class BookService {
 
     // 2. 책 목록 보기
     // stream / filter / map(박스에 옮겨담기, 얘만의 스트림으로 바뀜) / collect(변환해서 수집/목적지로 전달)
-    public List<BookRespDto> look_book_contents() {
-        return bookRepository.findAll().stream()
+    public BookListRespDto look_book_contents() {
+        List<BookRespDto> dtos = bookRepository.findAll().stream()
 //                .map((bookPS) -> bookPS.toDto())
                 .map(Book::toDto)
                 .collect(Collectors.toList());
+
+        BookListRespDto bookListRespDto = BookListRespDto.builder().bookList(dtos).build();
+        return bookListRespDto;
     }
 
     // 3. 책 한 권 보기
