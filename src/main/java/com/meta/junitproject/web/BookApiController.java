@@ -10,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -72,13 +69,19 @@ public class BookApiController {
     }
 
     // 3. 책 한 건 보기
-    public ResponseEntity<?> getBookOne() {
-        return null;
+    @GetMapping("/api/v1/book/{id}")
+    public ResponseEntity<?> getBookOne(@PathVariable Long id) {
+        BookRespDto bookRespDto = bookService.look_one_book(id);
+        return new ResponseEntity<>(CommonRespDto.builder().code(1).message("글 한 건 보기 성공").body(bookRespDto).build(),
+                HttpStatus.OK); // 200 = OK
     }
 
     // 4. 책 삭제하기
-    public ResponseEntity<?> deleteBook() {
-        return null;
+    @DeleteMapping("/api/v1/book/{id}")
+    public ResponseEntity<?> deleteBook(@PathVariable Long id) {
+        bookService.delete_book(id);
+        return new ResponseEntity<>(CommonRespDto.builder().code(1).message("글 삭제하기 성공").body(null).build(),
+                HttpStatus.OK); // No Content(204)는 메시지가 따라오지 않아서 ok 처리
     }
 
     // 5. 책 수정하기
