@@ -85,7 +85,24 @@ public class BookApiController {
     }
 
     // 5. 책 수정하기
-    public ResponseEntity<?> updateBook() {
-        return null;
+    @PutMapping("/api/v1/book/{id}")
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody @Valid BookSaveReqDto bookSaveReqDto,
+                                        BindingResult bindingResult) {
+        // AOP 처리하는 것이 좋음
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorMap = new HashMap<>();
+            for (FieldError fe: bindingResult.getFieldErrors()) {
+                errorMap.put(fe.getField(), fe.getDefaultMessage());
+            }
+            System.out.println("=========================");
+            System.out.println(errorMap);
+            System.out.println("=========================");
+
+            throw new RuntimeException(errorMap.toString());
+        }
+
+        BookRespDto bookRespDto = bookService.modify_book(id, bookSaveReqDto);
+        return new ResponseEntity<>(CommonRespDto.builder().code(1).message("글 수정하기 성공").body(bookRespDto).build(),
+                HttpStatus.OK);
     }
 }
