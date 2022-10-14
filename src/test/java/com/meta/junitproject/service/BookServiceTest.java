@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.when;
  * 그래서 stub 정의해주면 잘 동작함.
  *
  */
+@ActiveProfiles("dev")
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
 

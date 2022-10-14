@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -38,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  * 2. 메서드 실행(트랜잭션 시작) -> 종료(트랜잭션 종료) -> rollback됨!
  * *** 실제 서버로 테스트할 때 id를 검증하는 것이라면(auto-increment) 쓰지 마라.
  */
-
+@ActiveProfiles("dev")
 @DataJpaTest  // DB와 관련된 컴포넌트만 메모리에 로딩(Controller, Service는 메모리에 안 뜬다.)
 public class BookRepositoryTest {
 
@@ -80,7 +81,7 @@ public class BookRepositoryTest {
 
     // 2. 책 목록 보기
     @Test
-    public void book_contents_test() {
+    public void getBookList_test() {
         //given
         String title = "junit";
         String author = "meta";
